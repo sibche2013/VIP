@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SNI IP Scanner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            onyx: { 950:'#020204',900:'#030305',850:'#06060a',800:'#08080c',750:'#0a0a10',700:'#0e0e14',650:'#12121c',600:'#161620',550:'#1a1a28',500:'#1e1e2a',400:'#2a2a3a' },
+            cyber: { indigo:'#6366f1', violet:'#8b5cf6', emerald:'#10b981' }
+          },
+          fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['JetBrains Mono','monospace'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background-color:#030305;color:#e2e8f0;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#06060a}::-webkit-scrollbar-thumb{background:#1e1e2a;border-radius:4px}
+
+    body.light-theme{background-color:#f5f5f5;color:#1a1a1a}
+    body.light-theme ::-webkit-scrollbar-track{background:#e5e5e5}
+    body.light-theme ::-webkit-scrollbar-thumb{background:#a3a3a3}
+
+    @media(min-width:640px){
+      .glass-panel{background:rgba(255,255,255,0.02);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.04)}
+      .glass-panel-strong{background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06)}
+      .glass-btn{background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(139,92,246,0.1));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(99,102,241,0.2);box-shadow:0 0 20px rgba(99,102,241,0.08),inset 0 1px 0 rgba(255,255,255,0.05)}
+      .glass-btn:hover{background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.18));border-color:rgba(99,102,241,0.35);box-shadow:0 0 30px rgba(99,102,241,0.15),inset 0 1px 0 rgba(255,255,255,0.08)}
+      .glass-btn:disabled{background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.03);box-shadow:none}
+      .glow-indigo{box-shadow:0 0 40px rgba(99,102,241,0.06)}.glow-violet{box-shadow:0 0 40px rgba(139,92,246,0.06)}.glow-emerald{box-shadow:0 0 30px rgba(16,185,129,0.08)}
+      .header-glow{text-shadow:0 0 60px rgba(99,102,241,0.3),0 0 120px rgba(139,92,246,0.15)}
+      .progress-glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+      .accordion-header:hover{background:rgba(255,255,255,0.02)}
+
+      body.light-theme .glass-panel{background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.08)}
+      body.light-theme .glass-panel-strong{background:rgba(255,255,255,0.8);border:1px solid rgba(0,0,0,0.1)}
+      body.light-theme .glass-btn{background:linear-gradient(135deg,rgba(30,30,30,0.9),rgba(50,50,50,0.85));border:1px solid rgba(0,0,0,0.15);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+      body.light-theme .glass-btn:hover{background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,40,0.9));border-color:rgba(0,0,0,0.25)}
+      body.light-theme .glass-btn:disabled{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.06);box-shadow:none}
+      body.light-theme .glow-indigo,body.light-theme .glow-violet,body.light-theme .glow-emerald{box-shadow:0 1px 12px rgba(0,0,0,0.06)}
+      body.light-theme .header-glow{text-shadow:none;color:#111}
+      body.light-theme .progress-glass{background:rgba(0,0,0,0.05)}
+      body.light-theme .accordion-header:hover{background:rgba(0,0,0,0.02)}
+    }
+    @media(max-width:639px){
+      .glass-panel{background:#0c0c12;border:1px solid rgba(255,255,255,0.04)}
+      .glass-panel-strong{background:#0e0e16;border:1px solid rgba(255,255,255,0.06)}
+      .glass-btn{background:linear-gradient(135deg,#161630,#1a1a2e);border:1px solid rgba(99,102,241,0.25)}
+      .glass-btn:hover{background:linear-gradient(135deg,#1e1e3a,#222240);border-color:rgba(99,102,241,0.4)}
+      .glass-btn:disabled{background:#0e0e14;border-color:rgba(255,255,255,0.04)}
+      .glow-indigo,.glow-violet,.glow-emerald{box-shadow:none}
+      .header-glow{text-shadow:none}
+      .progress-glass{background:#0a0a10}
+      .accordion-header:hover{background:rgba(255,255,255,0.01)}
+
+      body.light-theme .glass-panel{background:#f0f0f0;border:1px solid rgba(0,0,0,0.1)}
+      body.light-theme .glass-panel-strong{background:#fafafa;border:1px solid rgba(0,0,0,0.12)}
+      body.light-theme .glass-btn{background:linear-gradient(135deg,#222,#333);border:1px solid rgba(0,0,0,0.2)}
+      body.light-theme .glass-btn:hover{background:linear-gradient(135deg,#111,#222);border-color:rgba(0,0,0,0.3)}
+      body.light-theme .glass-btn:disabled{background:#e5e5e5;border-color:rgba(0,0,0,0.08)}
+      body.light-theme .glow-indigo,body.light-theme .glow-violet,body.light-theme .glow-emerald{box-shadow:none}
+      body.light-theme .header-glow{text-shadow:none;color:#111}
+      body.light-theme .progress-glass{background:#e5e5e5}
+      body.light-theme .accordion-header:hover{background:rgba(0,0,0,0.02)}
+    }
+
+    .accordion-content{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1)}
+    .accordion-content.open{max-height:800px}
+    .accordion-arrow{transition:transform 0.4s cubic-bezier(0.4,0,0.2,1)}
+    .accordion-arrow.open{transform:rotate(180deg)}
+    .progress-bar-fill{transition:width 0.5s cubic-bezier(0.4,0,0.2,1);background:linear-gradient(90deg,#6366f1,#8b5cf6,#10b981)}
+    body.light-theme .progress-bar-fill{background:linear-gradient(90deg,#1a1a1a,#555,#111)}
+    .row-working{cursor:pointer;transition:all 0.2s ease}
+    .row-working:hover{background-color:rgba(99,102,241,0.04)}
+    body.light-theme .row-working:hover{background-color:rgba(0,0,0,0.04)}
+    .row-selected{background-color:rgba(16,185,129,0.06)!important;border-left:2px solid #10b981}
+    body.light-theme .row-selected{background-color:rgba(0,0,0,0.06)!important;border-left:2px solid #111}
+    .btn-copy-flash{background:linear-gradient(135deg,#059669,#10b981)!important;border-color:rgba(16,185,129,0.5)!important;color:#fff!important;box-shadow:0 0 25px rgba(16,185,129,0.25)!important}
+    body.light-theme .btn-copy-flash{background:linear-gradient(135deg,#111,#333)!important;border-color:rgba(0,0,0,0.3)!important;color:#fff!important}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes scanPulse{0%,100%{opacity:1}50%{opacity:.5}}
+    .fade-in{animation:fadeIn .35s ease forwards}
+    .scan-pulse{animation:scanPulse 1.5s ease-in-out infinite}
+    .neon-line{height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.3),rgba(139,92,246,0.3),transparent)}
+    body.light-theme .neon-line{background:linear-gradient(90deg,transparent,rgba(0,0,0,0.15),rgba(0,0,0,0.15),transparent)}
+    .config-textarea{background:#050508;border:1px solid rgba(16,185,129,0.08);font-family:'JetBrains Mono',monospace}
+    body.light-theme .config-textarea{background:#fff;border:1px solid rgba(0,0,0,0.12);color:#1a1a1a}
+    .config-textarea:focus{border-color:rgba(16,185,129,0.2);box-shadow:0 0 20px rgba(16,185,129,0.05);outline:none}
+    body.light-theme .config-textarea:focus{border-color:rgba(0,0,0,0.25);box-shadow:0 0 10px rgba(0,0,0,0.05)}
+    .sni-select{background:#0a0a10;border:1px solid rgba(99,102,241,0.15);font-family:'JetBrains Mono',monospace;color:#d1d5db;font-size:12px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%236366f1' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+    body.light-theme .sni-select{background:#fff;border:1px solid rgba(0,0,0,0.15);color:#1a1a1a;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24' stroke='%23111' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E")}
+    .sni-select:focus{border-color:rgba(99,102,241,0.3);outline:none;box-shadow:0 0 12px rgba(99,102,241,0.08)}
+    .sni-select option{background:#0c0c12;color:#d1d5db}
+    body.light-theme .sni-select option{background:#fff;color:#1a1a1a}
+    .status-dot{width:6px;height:6px;border-radius:50%}
+    .status-dot-pending{background:#4b5563}
+    body.light-theme .status-dot-pending{background:#a3a3a3}
+    .status-dot-working{background:#10b981;box-shadow:0 0 8px rgba(16,185,129,0.5)}
+    body.light-theme .status-dot-working{background:#111;box-shadow:0 0 6px rgba(0,0,0,0.3)}
+    .status-dot-timeout{background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,0.4)}
+    body.light-theme .status-dot-timeout{background:#888;box-shadow:0 0 4px rgba(0,0,0,0.2)}
+    .table-row{border-bottom:1px solid rgba(255,255,255,0.025)}
+    body.light-theme .table-row{border-bottom:1px solid rgba(0,0,0,0.06)}
+    .table-header-cell{color:#6b7280;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+    body.light-theme .table-header-cell{color:#666}
+    .section-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:#4b5563}
+    body.light-theme .section-label{color:#555}
+    .micro-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500}
+    .inventory-item{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.03);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b7280;transition:all .2s ease;word-break:break-all}
+    body.light-theme .inventory-item{background:rgba(0,0,0,0.03);border-color:rgba(0,0,0,0.08);color:#555}
+    .inventory-item:hover{background:rgba(99,102,241,0.04);border-color:rgba(99,102,241,0.1);color:#9ca3af}
+    body.light-theme .inventory-item:hover{background:rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.15);color:#333}
+    .scrollable-inventory{max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#1e1e2a #06060a}
+    body.light-theme .scrollable-inventory{scrollbar-color:#bbb #e5e5e5}
+    .working-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500;background:rgba(16,185,129,0.08);color:rgba(16,185,129,0.7);border:1px solid rgba(16,185,129,0.12)}
+    body.light-theme .working-badge{background:rgba(0,0,0,0.06);color:#333;border:1px solid rgba(0,0,0,0.1)}
+
+    body.light-theme .text-white{color:#111!important}
+    body.light-theme .text-gray-300{color:#222!important}
+    body.light-theme .text-gray-400{color:#333!important}
+    body.light-theme .text-gray-500{color:#444!important}
+    body.light-theme .text-gray-600{color:#555!important}
+    body.light-theme .text-gray-700{color:#666!important}
+    body.light-theme .text-cyber-indigo\/80{color:#222!important}
+    body.light-theme .text-cyber-indigo\/90{color:#111!important}
+    body.light-theme .text-cyber-indigo\/60{color:#444!important}
+    body.light-theme .text-cyber-emerald\/60{color:#333!important}
+    body.light-theme .text-cyber-emerald\/70{color:#222!important}
+    body.light-theme .text-cyber-emerald\/80{color:#111!important}
+    body.light-theme .text-cyber-emerald\/30{color:#888!important}
+    body.light-theme .text-cyber-violet\/70{color:#333!important}
+    body.light-theme .text-red-400\/60{color:#c00!important}
+    body.light-theme h1 span.text-white{color:#111!important}
+
+    .theme-toggle{position:fixed;top:16px;right:16px;z-index:100;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);backdrop-filter:blur(12px);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;color:#9ca3af}
+    .theme-toggle:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#fff}
+    body.light-theme .theme-toggle{background:rgba(0,0,0,0.05);border-color:rgba(0,0,0,0.1);color:#555}
+    body.light-theme .theme-toggle:hover{background:rgba(0,0,0,0.1);border-color:rgba(0,0,0,0.2);color:#111}
+  </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-8 lg:p-10">
+
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">
+    <svg id="themeIconSun" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+    </svg>
+    <svg id="themeIconMoon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+    </svg>
+  </button>
+  <a href="https://github.com/RED-sonic" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="GitHub" style="right:64px">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+  <a href="https://t.me/hamedvpns" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="Telegram" style="right:112px">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+  </a>
+
+  <div class="hidden sm:block fixed inset-0 pointer-events-none" style="z-index:0">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-30" style="background:radial-gradient(ellipse at center,rgba(99,102,241,0.04) 0%,transparent 70%)"></div>
+    <div class="absolute bottom-0 left-1/4 w-[600px] h-[300px] opacity-20" style="background:radial-gradient(ellipse at center,rgba(139,92,246,0.03) 0%,transparent 70%)"></div>
+  </div>
+
+  <div class="relative max-w-4xl mx-auto space-y-5" style="z-index:1">
+
+    <header class="text-center space-y-4 pt-4 pb-2">
+      <div class="inline-flex items-center gap-2 mb-2">
+        <span class="micro-badge bg-cyber-indigo/10 text-cyber-indigo border border-cyber-indigo/20">
+          <span class="status-dot-working status-dot" style="width:4px;height:4px"></span>
+          LIVE SCANNER
+        </span>
+        <span class="micro-badge bg-onyx-600/50 text-gray-500 border border-white/5">v3.1</span>
+      </div>
+      <h1 class="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight header-glow">
+        <span class="bg-gradient-to-r from-cyber-indigo via-cyber-violet to-cyber-emerald bg-clip-text text-transparent">SNI IP</span>
+        <span class="text-white"> Scanner</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 tracking-widest uppercase font-light">Created by Hamedvpns / pArSa Panel</p>
+      <div class="neon-line max-w-xs mx-auto mt-2"></div>
+    </header>
+
+    <div class="glass-panel rounded-2xl overflow-hidden glow-indigo">
+      <button id="accordionToggle" onclick="toggleAccordion()" class="accordion-header w-full flex items-center justify-between px-5 sm:px-6 py-4 text-left transition-all duration-300">
+        <div class="flex items-center gap-3">
+          <span id="accordionArrow" class="accordion-arrow text-cyber-indigo/60 text-xs font-mono">▼</span>
+          <span class="text-sm font-medium text-gray-300">Background IP Pool</span>
+          <span class="micro-badge bg-cyber-violet/10 text-cyber-violet/70 border border-cyber-violet/15" id="domainCount">0 Domains</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyber-indigo/40 scan-pulse"></span>
+          <span class="text-[10px] text-gray-600 uppercase tracking-wider font-medium hidden sm:inline">Harvesting Pool</span>
+        </div>
+      </button>
+      <div id="accordionContent" class="accordion-content">
+        <div class="px-5 sm:px-6 pb-5">
+          <div class="scrollable-inventory flex flex-wrap gap-1.5" id="domainList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-panel-strong rounded-2xl p-5 sm:p-6 space-y-4 glow-violet">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h2 class="section-label">Scan Control</h2>
+          <span id="scanStatus" class="micro-badge bg-onyx-600/50 text-gray-500 border border-white/5">
+            <span class="status-dot status-dot-pending" id="scanDot"></span>
+            Ready
+          </span>
+        </div>
+        <span id="workingCount" class="text-[10px] text-gray-600 uppercase tracking-wider hidden sm:inline">—</span>
+      </div>
+      <div class="flex items-center gap-3 sm:gap-4">
+        <button id="scanBtn" onclick="startScan()" class="glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5">
+          <svg id="scanIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <span id="scanBtnText">Start Scan</span>
+        </button>
+        <div class="flex-1 space-y-1.5">
+          <div class="progress-glass h-2 rounded-full overflow-hidden" style="border:1px solid rgba(255,255,255,0.03)">
+            <div id="progressBar" class="progress-bar-fill h-full rounded-full" style="width:0%"></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span id="progressLabel" class="text-[10px] text-gray-600 uppercase tracking-wider hidden sm:inline">Progress</span>
+            <span id="progressPct" class="text-xs text-gray-500 font-mono font-medium w-10 text-right">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsSection" class="glass-panel rounded-2xl overflow-hidden glow-emerald">
+      <div class="px-5 sm:px-6 py-4 border-b border-white/3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h2 class="section-label">Scan Results (Premium Targets)</h2>
+          <span class="micro-badge bg-onyx-600/30 text-gray-600 border border-white/3">
+            <span class="status-dot status-dot-pending" style="width:4px;height:4px"></span>
+            Realtime
+          </span>
+        </div>
+        <span class="text-[10px] text-gray-600 font-mono uppercase tracking-wider" id="selectedDomainLabel">—</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/3">
+              <th class="table-header-cell px-5 sm:px-6 py-3 text-left">Status</th>
+              <th class="table-header-cell px-5 sm:px-6 py-3 text-left">Target Domain (SNI)</th>
+              <th class="table-header-cell px-5 sm:px-6 py-3 text-left">Harvested Ping</th>
+              <th class="table-header-cell px-5 sm:px-6 py-3 text-left">Assigned Clean IP</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+      <div class="px-5 sm:px-6 py-3 border-t border-white/3 flex items-center justify-between">
+        <span id="resultStats" class="text-[10px] text-gray-600 font-mono">0 / 0 pool checked</span>
+        <div class="flex items-center gap-3">
+          <span class="working-badge" id="workingStat"><span class="status-dot-working status-dot" style="width:4px;height:4px"></span><span id="workingStatNum">0</span> working</span>
+          <span class="micro-badge bg-red-500/5 text-red-400/60 border border-red-500/10" id="timeoutStat"><span id="timeoutStatNum">0</span> timeout</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="configSection" class="glass-panel rounded-2xl overflow-hidden hidden glow-emerald">
+      <div class="px-5 sm:px-6 py-4 border-b border-white/3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <h2 class="section-label">Config Generator</h2>
+          <span class="micro-badge bg-cyber-emerald/10 text-cyber-emerald/70 border border-cyber-emerald/15">
+            <span class="status-dot-working status-dot" style="width:4px;height:4px"></span>
+            Trojan URI
+          </span>
+        </div>
+      </div>
+      <div class="p-5 sm:p-6 space-y-4">
+
+        <div class="flex items-center gap-3 p-3 rounded-xl bg-onyx-900/50 border border-white/3">
+          <span class="text-[10px] text-gray-600 uppercase tracking-wider font-semibold w-20 flex-shrink-0">SNI IP</span>
+          <span id="selectedIpDisplay" class="font-mono text-xs text-cyber-indigo/80">—</span>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] text-gray-600 uppercase tracking-wider font-semibold">Select Target SNI Profile</label>
+          <select id="sniSelect" class="sni-select w-full px-4 py-3 rounded-xl transition-all duration-300" onchange="onSniChange()">
+            <option value="" disabled selected>Choose a premium SNI target...</option>
+          </select>
+        </div>
+
+        <div class="relative">
+          <textarea id="configOutput" readonly class="config-textarea w-full h-32 rounded-xl px-4 py-3 text-xs text-cyber-emerald/80 resize-none transition-all duration-300" placeholder="Select a working domain & SNI profile to generate config..."></textarea>
+          <div class="absolute top-2.5 right-3 flex items-center gap-1.5 pointer-events-none">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyber-emerald/30"></span>
+            <span class="text-[9px] text-cyber-emerald/30 uppercase tracking-wider font-mono">output</span>
+          </div>
+        </div>
+
+        <button id="copyBtn" onclick="copyConfig()" disabled class="glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5">
+          <svg id="copyIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+          </svg>
+          <span id="copyBtnText">Copy to Clipboard</span>
+          <span id="copyFeedback" class="hidden text-[10px] text-cyber-emerald font-mono">✓ copied</span>
+        </button>
+      </div>
+    </div>
+
+    <footer class="text-center py-6 space-y-3">
+      <div class="neon-line max-w-xs mx-auto"></div>
+      <div class="flex items-center justify-center gap-3">
+        <span class="text-[10px] text-gray-700 uppercase tracking-widest font-light">Hamedvpns</span>
+        <span class="w-1 h-1 rounded-full bg-cyber-indigo/30"></span>
+        <span class="text-[10px] text-gray-700 uppercase tracking-widest font-light">pArSa Panel</span>
+      </div>
+      <p class="text-[10px] text-gray-600 font-mono">&copy; 2025 Hamedvpns / pArSa Panel. All Rights Reserved.</p>
+      <p class="text-[9px] text-gray-700">Unauthorized copying, modification, distribution, or reproduction of this software and its source code is strictly prohibited.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    
+    const TARGET_SNIS = [
+      'www.gossipglove.com',
+      'www.calmloud.com',
+      'www.multiplydose.com',
+      'www.ignitelimit.com',
+      'www.creationlong.org'
+    ];
+
+    
+    const SCAN_INVENTORY = [
+      'www.gossipglove.com','www.calmloud.com','www.multiplydose.com','www.ignitelimit.com','www.creationlong.org',
+      'cdnjs.cloudflare.com','unpkg.com','dash.cloudflare.com','api.cloudflare.com','workers.dev','challenges.cloudflare.com',
+      'speed.cloudflare.com','www.digitalocean.com','www.gitlab.com','www.bitbucket.org','www.docker.com','www.udemy.com',
+      'www.coursera.org','www.khanacademy.org','www.quizlet.com','www.edx.org','www.duolingo.com','www.codecademy.com',
+      'www.speedtest.net','www.glassdoor.com','www.vimeo.com','www.scribd.com','www.fiverr.com','www.upwork.com',
+      'www.shutterstock.com','www.behance.net','www.pinterest.com','www.zoom.us','www.slack.com','www.trello.com',
+      'www.asana.com','www.basecamp.com','www.dropbox.com','www.box.com','www.target.com','www.walmart.com',
+      'www.bestbuy.com','www.nike.com','www.adidas.com','www.tripadvisor.com','www.booking.com','www.expedia.com',
+      'www.agoda.com','www.skyscanner.net','www.hostgator.com','www.bluehost.com','www.elastic.co','www.splunk.com',
+      'www.hashicorp.com','www.trendmicro.com','www.paloaltonetworks.com','coffeemeetsbagel.com','www.pixabay.com',
+      'www.pexels.com','www.patreon.com','www.quora.com','www.okcupid.com','www.huffpost.com','www.buzzfeed.com',
+      'www.vice.com','www.economist.com','www.reuters.com','www.time.com','www.bbc.co.uk','www.cnn.com',
+      'www.nytimes.com','www.theguardian.com','www.bloomberg.com','www.forbes.com','www.wsj.com','www.cnbc.com',
+      'www.ft.com','www.theverge.com','www.wired.com','www.techcrunch.com','www.engadget.com','www.gizmodo.com',
+      'www.mashable.com','www.indiatimes.com','www.thehindu.com','www.allmusic.com','www.imdb.com','www.rottentomatoes.com',
+      'www.metacritic.com','www.goodreads.com','www.deviantart.com','www.artstation.com','www.dribbble.com',
+      'www.flickr.com','www.imgur.com','www.giphy.com','www.tenor.com','www.kickstarter.com','www.indiegogo.com',
+      'www.gofundme.com','www.change.org','www.meetup.com','www.eventbrite.com','www.ticketmaster.com',
+      'www.stubhub.com','www.livenation.com','www.soundcloud.com','www.bandcamp.com','www.mixcloud.com',
+      'www.deezer.com','www.tidal.com','www.napster.com','www.discogs.com','www.genius.com','www.songfacts.com'
+    ];
+
+    const BASE_CONFIG = 'trojan://humanity@104.18.217.142:443?path=%2Fassignment&security=tls&insecure=0&host=www.calmlunch.com&type=ws&allowInsecure=0&sni=www.calmlunch.com#%E2%9A%A1Hamedvpns%20%2F%20pArSa%20Panel%E2%9A%A1';
+    const BASE_IP = '104.18.217.142';
+    const BASE_HOST = 'www.calmlunch.com';
+    const FETCH_TIMEOUT = 4000;
+    const BATCH_SIZE = 4;
+    const BATCH_DELAY = 100;
+
+    let targetResults = [];
+    let selectedCleanIP = null;
+    let isScanning = false;
+    let workingCount = 0;
+    let timeoutCount = 0;
+    let slotIndex = 0;
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      document.getElementById('themeIconSun').classList.toggle('hidden', isLight);
+      document.getElementById('themeIconMoon').classList.toggle('hidden', !isLight);
+    }
+
+    (function init() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.body.classList.add('light-theme');
+        document.getElementById('themeIconSun').classList.remove('hidden');
+        document.getElementById('themeIconMoon').classList.add('hidden');
+      }
+      document.getElementById('domainCount').textContent = SCAN_INVENTORY.length + ' Pool Domains';
+      const listEl = document.getElementById('domainList');
+      listEl.innerHTML = SCAN_INVENTORY.map(d =>
+        `<div class="inventory-item"><span class="status-dot-working status-dot" style="width:3px;height:3px"></span>${d}</div>`
+      ).join('');
+      
+      const sel = document.getElementById('sniSelect');
+      sel.innerHTML = '<option value="" disabled selected>Choose a premium SNI target...</option>';
+      TARGET_SNIS.forEach(sni => {
+        const opt = document.createElement('option');
+        opt.value = sni;
+        opt.textContent = sni;
+        sel.appendChild(opt);
+      });
+
+      
+      const tbody = document.getElementById('resultsBody');
+      tbody.innerHTML = TARGET_SNIS.map((d, i) => createRow(d, i)).join('');
+    })();
+
+    
+    function toggleAccordion() {
+      document.getElementById('accordionContent').classList.toggle('open');
+      document.getElementById('accordionArrow').classList.toggle('open');
+    }
+
+    
+    function setProgress(pct) {
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressPct').textContent = Math.round(pct) + '%';
+    }
+    function setStatus(text) {
+      const dotClass = text.startsWith('Scanning') ? 'status-dot-working scan-pulse' : text === 'Complete' ? 'status-dot-working' : 'status-dot-pending';
+      document.getElementById('scanStatus').innerHTML = `<span class="status-dot ${dotClass}" style="width:4px;height:4px"></span> ${text}`;
+    }
+    function setWorkingCount(n) {
+      const el = document.getElementById('workingCount');
+      el.innerHTML = n > 0 ? `<span class="text-cyber-emerald/60">${n} / 5 loaded</span>` : '—';
+    }
+
+    
+    function createRow(domain, index) {
+      return `<tr id="row-${index}" class="table-row transition-colors duration-200">
+        <td class="px-5 sm:px-6 py-3"><span id="status-${index}" class="inline-flex items-center gap-2 text-xs"><span class="status-dot status-dot-pending"></span><span class="text-gray-500">Pending</span></span></td>
+        <td class="px-5 sm:px-6 py-3 font-mono text-xs text-gray-400">${domain}</td>
+        <td class="px-5 sm:px-6 py-3 text-xs text-gray-600 font-mono" id="ping-${index}">—</td>
+        <td class="px-5 sm:px-6 py-3 text-xs text-gray-600 font-mono" id="ip-${index}">—</td>
+      </tr>`;
+    }
+    function updateRowStatus(index, status) {
+      const el = document.getElementById(`status-${index}`);
+      const dots = { pending:'status-dot-pending', working:'status-dot-working', timeout:'status-dot-timeout' };
+      const cls = { pending:'text-gray-500', working:'text-cyber-emerald', timeout:'text-red-400' };
+      const lbl = { pending:'Pending', working:'Working', timeout:'Timeout' };
+      el.innerHTML = `<span class="status-dot ${dots[status]}"></span><span class="${cls[status]}">${lbl[status]}</span>`;
+    }
+    function updateRowPing(index, ms) {
+      const el = document.getElementById(`ping-${index}`);
+      el.textContent = ms + ' ms';
+      el.className = 'px-5 sm:px-6 py-3 text-xs text-gray-300 font-mono';
+    }
+    function updateRowIP(index, ip) {
+      const el = document.getElementById(`ip-${index}`);
+      el.textContent = ip;
+      el.className = 'px-5 sm:px-6 py-3 text-xs text-cyber-indigo/90 font-mono';
+    }
+    function makeRowClickable(index, domain, ip) {
+      const row = document.getElementById(`row-${index}`);
+      row.classList.add('row-working');
+      row.onclick = function () {
+        document.querySelectorAll('#resultsBody tr').forEach(r => r.classList.remove('row-selected'));
+        row.classList.add('row-selected');
+        selectedCleanIP = ip;
+        document.getElementById('selectedDomainLabel').textContent = domain;
+        document.getElementById('selectedIpDisplay').textContent = ip;
+        document.getElementById('configSection').classList.remove('hidden');
+        
+        
+        const sel = document.getElementById('sniSelect');
+        if(TARGET_SNIS.includes(domain)) sel.value = domain;
+        
+        generateConfig(ip);
+      };
+    }
+
+    
+    function onSniChange() {
+      if (selectedCleanIP) generateConfig(selectedCleanIP);
+    }
+
+    function generateConfig(cleanIP) {
+      const chosenSni = document.getElementById('sniSelect').value;
+      if (!chosenSni || !cleanIP) {
+        document.getElementById('configOutput').value = '';
+        document.getElementById('copyBtn').disabled = true;
+        document.getElementById('copyBtn').className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
+        return;
+      }
+      const encodedRemark = '%E2%9A%A1Hamedvpns%20%2F%20pArSa%20Panel%E2%9A%A1';
+      let config = BASE_CONFIG.replace(BASE_IP, cleanIP);
+      config = config.split(BASE_HOST).join(chosenSni);
+      config = config.replace(/#.*$/, '#' + encodedRemark);
+      document.getElementById('configOutput').value = config;
+      document.getElementById('configSection').classList.remove('hidden');
+      const btn = document.getElementById('copyBtn');
+      btn.disabled = false;
+      btn.className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5';
+    }
+
+    
+    function copyConfig() {
+      const text = document.getElementById('configOutput').value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(flashCopy).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        flashCopy();
+      });
+    }
+    function flashCopy() {
+      const btn = document.getElementById('copyBtn');
+      const txt = document.getElementById('copyBtnText');
+      const fb = document.getElementById('copyFeedback');
+      btn.classList.add('btn-copy-flash');
+      txt.textContent = 'Config Successfully Exported!';
+      fb.classList.remove('hidden');
+      setTimeout(() => {
+        btn.classList.remove('btn-copy-flash');
+        txt.textContent = 'Copy to Clipboard';
+        fb.classList.add('hidden');
+      }, 2000);
+    }
+
+    
+    async function resolveDomain(domain) {
+      
+      const apis = [
+        `https://dns.alidns.com/resolve?name=${domain}&type=A`, 
+        `https://doh.pub/dns-query?name=${domain}&type=A`,     
+        `https://1.1.1.1/dns-query?name=${domain}&type=A`,     
+        `https://8.8.8.8/resolve?name=${domain}&type=A`,       
+        `https://cloudflare-dns.com/dns-query?name=${domain}&type=A`,
+        `https://dns.google/resolve?name=${domain}&type=A`
+      ];
+      
+      for (const url of apis) {
+        try {
+          const res = await fetch(url, {
+            headers: { 'Accept': 'application/dns-json' },
+            signal: AbortSignal.timeout(3000)
+          });
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (data.Answer) {
+            const aRecord = data.Answer.find(a => a.type === 1 || a.type === 'A');
+            if (aRecord && aRecord.data) {
+              const ip = aRecord.data.trim().replace(/\.$/, '');
+              if (/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip)) {
+                return ip;
+              }
+            }
+          }
+        } catch {}
+      }
+      
+      y
+      const fallbackIPs = [
+        '104.18.217.142', '104.18.0.55', '104.18.16.216', '104.17.24.14', 
+        '104.19.192.176', '172.65.251.78', '162.159.140.220', '104.16.143.237'
+      ];
+      return fallbackIPs[Math.floor(Math.random() * fallbackIPs.length)];
+    }
+
+    
+    async function pingDomain(domain) {
+      const start = performance.now();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+      try {
+        await fetch(`https://${domain}/`, { mode: 'no-cors', cache: 'no-store', signal: controller.signal });
+        clearTimeout(timer);
+        return Math.round(performance.now() - start);
+      } catch {
+        clearTimeout(timer);
+        return null;
+      }
+    }
+
+    
+    async function processInventoryBatch(batch) {
+      const promises = batch.map(async (domain) => {
+        if (slotIndex >= TARGET_SNIS.length) return; 
+        const ip = await resolveDomain(domain);
+        const ping = await pingDomain(domain);
+
+        if (ping !== null) {
+          
+          if (slotIndex < TARGET_SNIS.length) {
+            const currentSlot = slotIndex;
+            slotIndex++; 
+            updateRowStatus(currentSlot, 'working');
+            updateRowPing(currentSlot, ping);
+            updateRowIP(currentSlot, ip);
+            makeRowClickable(currentSlot, TARGET_SNIS[currentSlot], ip);
+            
+            workingCount++;
+            setWorkingCount(workingCount);
+          }
+        } else {
+          timeoutCount++;
+        }
+      });
+      await Promise.all(promises);
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    
+    async function startScan() {
+      if (isScanning) return;
+      isScanning = true;
+      selectedCleanIP = null;
+      workingCount = 0;
+      timeoutCount = 0;
+      slotIndex = 0;
+
+      const btnScan = document.getElementById('scanBtn');
+      const scanBtnText = document.getElementById('scanBtnText');
+      const scanIcon = document.getElementById('scanIcon');
+      btnScan.disabled = true;
+      btnScan.className = 'glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5 cursor-not-allowed opacity-60';
+      scanBtnText.textContent = 'Scanning Pool...';
+      scanIcon.classList.add('scan-pulse');
+
+      document.getElementById('configSection').classList.add('hidden');
+      document.getElementById('configOutput').value = '';
+      document.getElementById('selectedDomainLabel').textContent = '—';
+      document.getElementById('selectedIpDisplay').textContent = '—';
+      document.getElementById('sniSelect').selectedIndex = 0;
+
+      const copyBtn = document.getElementById('copyBtn');
+      copyBtn.disabled = true;
+      copyBtn.className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
+
+      
+      const tbody = document.getElementById('resultsBody');
+      tbody.innerHTML = TARGET_SNIS.map((d, i) => createRow(d, i)).join('');
+
+      setProgress(0);
+      setStatus('Scanning background pool...');
+      setWorkingCount(0);
+      
+      document.getElementById('resultStats').textContent = `0 / ${SCAN_INVENTORY.length} pool checked`;
+      document.getElementById('workingStatNum').textContent = '0';
+      document.getElementById('timeoutStatNum').textContent = '0';
+
+      let completed = 0;
+      for (let i = 0; i < SCAN_INVENTORY.length; i += BATCH_SIZE) {
+        if (slotIndex >= TARGET_SNIS.length) break; 
+
+        const batch = SCAN_INVENTORY.slice(i, i + BATCH_SIZE);
+        await processInventoryBatch(batch);
+        
+        completed += batch.length;
+        setProgress((completed / SCAN_INVENTORY.length) * 100);
+        document.getElementById('resultStats').textContent = `${Math.min(completed, SCAN_INVENTORY.length)} / ${SCAN_INVENTORY.length} pool checked`;
+        document.getElementById('workingStatNum').textContent = workingCount;
+        document.getElementById('timeoutStatNum').textContent = timeoutCount;
+        
+        if (i + BATCH_SIZE < SCAN_INVENTORY.length) await sleep(BATCH_DELAY);
+      }
+
+      
+      for (let s = slotIndex; s < TARGET_SNIS.length; s++) {
+        updateRowStatus(s, 'timeout');
+      }
+
+      setStatus('Complete');
+      scanIcon.classList.remove('scan-pulse');
+      btnScan.disabled = false;
+      scanBtnText.textContent = 'Start Scan';
+      btnScan.className = 'glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5';
+      isScanning = false;
+    }
+  </script>
+</body>
+</html>
