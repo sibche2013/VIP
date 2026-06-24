@@ -44,8 +44,8 @@
       body.light-theme .glass-panel-strong{background:rgba(255,255,255,0.8);border:1px solid rgba(0,0,0,0.1)}
       body.light-theme .glass-btn{background:linear-gradient(135deg,rgba(30,30,30,0.9),rgba(50,50,50,0.85));border:1px solid rgba(0,0,0,0.15);box-shadow:0 2px 8px rgba(0,0,0,0.1)}
       body.light-theme .glass-btn:hover{background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,40,0.9));border-color:rgba(0,0,0,0.25)}
-    body.light-theme .glass-btn:disabled{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.06);box-shadow:none;color:#999!important}
-    body.light-theme .glass-btn{color:#fff}
+    body.light-theme .glass-btn:disabled{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.06);box-shadow:none;color:#aaa!important}
+    body.light-theme .glass-btn{color:#fff!important}
     body.light-theme .glow-indigo,body.light-theme .glow-violet,body.light-theme .glow-emerald{box-shadow:0 1px 12px rgba(0,0,0,0.06)}
       body.light-theme .header-glow{text-shadow:none;color:#111}
       body.light-theme .progress-glass{background:rgba(0,0,0,0.05)}
@@ -150,7 +150,13 @@
 </head>
 <body class="min-h-screen p-4 sm:p-6 md:p-8 lg:p-10">
 
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme">
+  <a href="https://t.me/hamedvpns" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="Telegram" style="left:16px;right:auto">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+  </a>
+  <a href="https://github.com/RED-sonic" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="GitHub" style="left:64px;right:auto">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Light/Dark Theme" style="right:16px;left:auto">
     <svg id="themeIconSun" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
     </svg>
@@ -158,12 +164,6 @@
       <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
     </svg>
   </button>
-  <a href="https://github.com/RED-sonic" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="GitHub" style="right:64px">
-    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-  </a>
-  <a href="https://t.me/hamedvpns" target="_blank" rel="noopener noreferrer" class="theme-toggle" title="Telegram" style="right:112px">
-    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-  </a>
 
   <div class="hidden sm:block fixed inset-0 pointer-events-none" style="z-index:0">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] opacity-30" style="background:radial-gradient(ellipse at center,rgba(99,102,241,0.04) 0%,transparent 70%)"></div>
@@ -225,7 +225,7 @@
         <span id="workingCount" class="text-[10px] text-gray-600 uppercase tracking-wider hidden sm:inline">—</span>
       </div>
       <div class="flex items-center gap-3 sm:gap-4">
-        <button id="scanBtn" onclick="startScan()" class="glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5">
+        <button id="scanBtn" onclick="startScan()" class="glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5" style="color:#fff!important">
           <svg id="scanIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
@@ -308,7 +308,7 @@
           </div>
         </div>
 
-        <button id="copyBtn" onclick="copyConfig()" disabled class="glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5">
+        <button id="copyBtn" onclick="copyConfig()" disabled class="glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-300 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5">
           <svg id="copyIcon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
           </svg>
@@ -489,7 +489,7 @@
       if (!chosenSni || !cleanIP) {
         document.getElementById('configOutput').value = '';
         document.getElementById('copyBtn').disabled = true;
-        document.getElementById('copyBtn').className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
+        document.getElementById('copyBtn').className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-300 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
         return;
       }
       const encodedRemark = '%E2%9A%A1Hamedvpns%20%2F%20pArSa%20Panel%E2%9A%A1';
@@ -629,7 +629,8 @@
       const scanBtnText = document.getElementById('scanBtnText');
       const scanIcon = document.getElementById('scanIcon');
       btnScan.disabled = true;
-      btnScan.className = 'glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5 cursor-not-allowed opacity-60';
+      btnScan.className = 'glass-btn px-6 sm:px-8 py-3 text-sm font-semibold text-gray-300 rounded-xl transition-all duration-300 flex-shrink-0 flex items-center gap-2.5 cursor-not-allowed opacity-60';
+      btnScan.style.color = '#fff';
       scanBtnText.textContent = 'Scanning Pool...';
       scanIcon.classList.add('scan-pulse');
 
@@ -641,7 +642,7 @@
 
       const copyBtn = document.getElementById('copyBtn');
       copyBtn.disabled = true;
-      copyBtn.className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-500 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
+      copyBtn.className = 'glass-btn w-full px-6 py-3 text-sm font-semibold text-gray-300 rounded-xl transition-all duration-300 cursor-not-allowed flex items-center justify-center gap-2.5';
 
       
       const tbody = document.getElementById('resultsBody');
