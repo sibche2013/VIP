@@ -4,22 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SNI IP Scanner</title>
- <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            onyx: { 950:'#020204',900:'#030305',850:'#06060a',800:'#08080c',750:'#0a0a10',700:'#0e0e14',650:'#12121c',600:'#161620',550:'#1a1a28',500:'#1e1e2a',400:'#2a2a3a' },
-            cyber: { indigo:'#6366f1', violet:'#8b5cf6', emerald:'#10b981' }
-          },
-          fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['JetBrains Mono','monospace'] }
-        }
-      }
-    }
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style type="text/theme">
+  @theme {
+    /* تعریف رنگ‌های خانواده onyx */
+    --color-onyx-950: #020204;
+    --color-onyx-900: #030305;
+    --color-onyx-850: #06060a;
+    --color-onyx-800: #08080c;
+    --color-onyx-750: #0a0a10;
+    --color-onyx-700: #0e0e14;
+    --color-onyx-650: #12121c;
+    --color-onyx-600: #161620;
+    --color-onyx-550: #1a1a28;
+    --color-onyx-500: #1e1e2a;
+    --color-onyx-400: #2a2a3a;
+
+    /* تعریف رنگ‌های خانواده cyber */
+    --color-cyber-indigo: #6366f1;
+    --color-cyber-violet: #8b5cf6;
+    --color-cyber-emerald: #10b981;
+
+    /* تعریف فونت‌ها */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+</style>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{background-color:#030305;color:#e2e8f0;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
